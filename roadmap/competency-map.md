@@ -78,10 +78,10 @@ Provisioned machines still need consistent, repeatable configuration — package
 **Depends on competencies:** Declarative, Version-Controlled System State, Reproducible Provisioning
 **Enables competencies:** Orchestration at Scale
 
-**Status:** Not Started
+**Status:** Developing
 
-**Learning objectives:** → TBD
-**Evidence:** → TBD
+**Learning objectives:** → see learning-objectives.md, "Configuration Consistency"
+**Evidence:** → projects/00-configuration-baseline/evidence/
 
 ---
 

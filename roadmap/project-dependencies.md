@@ -3,10 +3,9 @@
 The sequencing graph. Unlike the ADRs, this file is meant to be edited constantly as the map firms up — it's a working document, not a historical record.
 
 ## Table
-
 | Project | Depends on (projects) | Builds toward (competencies) | Status |
 |---|---|---|---|
-| _(none scoped yet)_ | | | |
+| 00-configuration-baseline | — | Configuration Consistency (builds on Declarative, Version-Controlled System State) | Proposed |
 
 ## Notes
 
