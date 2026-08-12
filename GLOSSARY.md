@@ -1,18 +1,12 @@
-# Glossary
+### YAML
 
-Terms defined in my own words, as I actually learn them — not copied from a textbook. If I can't explain a term simply here, I don't understand it yet, and that's worth knowing.
-
-This file starts empty on purpose. It fills in as the roadmap progresses.
-
-## Format
-
-```markdown
-### Term Name
 **My definition:**
+_(draft — not solid yet. Attempt 1: a text format that uses indentation, colons, and dashes to describe structured data — not instructions. Needs revisiting once it clicks more.)_
+
 **Why it matters here:**
-**First encountered in:** [Project NN](projects/NN-name/)
-```
 
----
+it matters here because we're running a ready-to-go iso instance.
+the base iso file stays the same but we can configure it to run with our configuration.
+this allows us to run the same iso file with different configuration in different scenarios.
 
-<!-- Entries go below this line. Delete this comment once the first entry is added. -->
+**First encountered in:** [Project 00](projects/00-configuration-baseline/)
