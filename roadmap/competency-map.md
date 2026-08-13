@@ -172,3 +172,21 @@ Enforcing rules — access, compliance, safe configuration — as code that runs
 
 **Learning objectives:** → TBD
 **Evidence:** → TBD
+
+---
+
+## Foundations — Scripting & Automation Fluency (Python & Bash)
+
+**Definition (in my own words):**
+_(to fill in)_
+
+**Why it matters in an enterprise DevOps role:**
+Nearly every tool in this map — Ansible, Terraform, CI/CD pipelines — is either written in or scriptable via Python or bash, and real-world automation constantly needs small custom scripts to glue tools together. Fluency here isn't a separate track from the other competencies; it underlies all of them.
+
+**Depends on competencies:** none — foundational, alongside Declarative, Version-Controlled System State
+**Enables competencies:** all of the above
+
+**Status:** Developing
+
+**Learning objectives:** → TBD
+**Evidence:** → TBD (studying via interactive platforms currently; real evidence should come from scripts actually written for this repo's projects, not platform exercises alone)
