@@ -1,0 +1,15 @@
+---
+- name: Apply baseline configurations
+  hosts: test
+  become: true
+
+  tasks:
+    - name: Update package cache (Debian/Ubuntu)
+      ansible.builtin.apt:
+        update_cache: true
+      when: ansible_facts['os_family'] == "Debian"
+
+    - name: Ensure htop is installed
+      ansible.builtin.package:
+        name: htop
+        state: present
