@@ -3,13 +3,33 @@
   hosts: test
   become: true
 
+  vars:
+    baseline_packages:
+      - htop
+      - vim
+      - git
+
   tasks:
-    - name: Update package cache (Debian/Ubuntu)
+    - name: Update package cache (Debian family)
       ansible.builtin.apt:
         update_cache: true
       when: ansible_facts['os_family'] == "Debian"
 
-    - name: Ensure htop is installed
+    - name: Ensure baseline packages are installed
       ansible.builtin.package:
-        name: htop
+        name: "{{ baseline_packages }}"
         state: present
+
+    - name: Deploy baseline MOTD
+      ansible.builtin.template:
+        src: motd.j2
+        dest: /etc/motd
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Show updated MOTD
+
+  handlers:
+    - name: Show updated MOTD
+      ansible.builtin.debug:
+        msg: "MOTD was updated on {{ inventory_hostname }} "
