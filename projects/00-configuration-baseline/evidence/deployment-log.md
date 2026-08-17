@@ -32,3 +32,7 @@ Debian VM went faster, with fewer errors overall: caught two YAML mistakes (miss
 ### Real errors hit and resolved
 - Debian install of `htop` failed: `"No package matching 'htop' is available"` — root cause: fresh cloud image, apt cache never refreshed. Fixed by adding a conditional `ansible.builtin.apt` cache-update task, scoped to Debian-family hosts only via `when: ansible_facts['os_family'] == "Debian"`.
 - Ansible's `--check` (dry-run) mode could not fully simulate the cache-update → install dependency chain — a known limitation of check mode for tasks whose purpose is enabling a later task. Confirmed by running for real instead of relying on the dry run alone.
+
+## Update 2026-08-13 — variables, templates, handlers
+
+`baseline.yml` expanded: package list moved into a `vars:` block, static MOTD replaced with a Jinja2 template (`templates/motd.j2`) rendered per-host. Confirmed on real machines via SSH that the template correctly rendered different content per host from one shared file — `debian-test-1` showed "OS family: Debian", `fedora-test-1` showed "OS family: RedHat". Handler (`notify:` → `Show updated MOTD`) confirmed firing only when the MOTD task actually changed something, and correctly absent from output when nothing changed on a repeat run.
