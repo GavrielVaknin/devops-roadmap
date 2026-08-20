@@ -13,3 +13,13 @@ Scaling containers doesn't mean making one bigger; it means running more identic
 ## Containerfile
 
 Same format as a Dockerfile, vendor-neutral name. `FROM` sets the base image, `COPY` brings files from the build context into the image, `EXPOSE` documents the port the app listens on inside the container. Port publishing actually happens at run time with `-p host:container`.
+
+## Volumes (draft — revisit in own words)
+
+A container's writable layer dies with the container. A volume is storage that lives outside that lifecycle — a real directory on the host, managed by Podman, mounted into the container at a chosen path. Destroy every container using it and the volume remains, which is why anything that must persist (databases, uploads, logs worth keeping) belongs in one.
+
+Two kinds:
+- **Named volume** — Podman manages the host location; you reference it only by name. Used for data the container owns.
+- **Bind mount** — a specific host directory mounted in. Used when the host is the source of truth, typically development, where editing a file on the host changes what the container serves instantly.
+
+The mount is not a persistent change to the host system. It exists only while the container exists, the same way published ports only forward while the container is running.
