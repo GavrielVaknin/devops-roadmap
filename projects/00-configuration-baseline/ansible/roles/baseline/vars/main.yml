@@ -1,0 +1,6 @@
+---
+# Higher-priority variables — internal to the role, not intended
+# to be overridden by users of it. Kept separate from defaults
+# for exactly that reason.
+
+baseline_managed_marker: "Managed by Ansible - devops-roadmap Project 00"

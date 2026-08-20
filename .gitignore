@@ -28,3 +28,9 @@ crash.log
 
 # General
 *.log
+
+# Generated Ansible inventory — produced by scripts/geninventory.sh from
+# whatever VMs are running. Addresses are DHCP-assigned and change constantly,
+# so committing this file would mean tracking meaningless churn. Regenerate it
+# rather than storing it.
+projects/*/ansible/inventory.yml

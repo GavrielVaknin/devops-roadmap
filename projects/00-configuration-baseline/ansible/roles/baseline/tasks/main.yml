@@ -1,0 +1,15 @@
+---
+# Tasks are split by concern and included, rather than written as one
+# long flat list. Each include carries tags so subsets can be run with
+# --tags / skipped with --skip-tags.
+
+- name: Refresh package manager cache
+  ansible.builtin.include_tasks: packages.yml
+  tags:
+    - packages
+
+- name: Configure message of the day
+  ansible.builtin.include_tasks: motd.yml
+  when: baseline_motd_enabled | bool
+  tags:
+    - motd

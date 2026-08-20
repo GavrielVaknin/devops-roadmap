@@ -36,3 +36,17 @@ Debian VM went faster, with fewer errors overall: caught two YAML mistakes (miss
 ## Update 2026-08-13 — variables, templates, handlers
 
 `baseline.yml` expanded: package list moved into a `vars:` block, static MOTD replaced with a Jinja2 template (`templates/motd.j2`) rendered per-host. Confirmed on real machines via SSH that the template correctly rendered different content per host from one shared file — `debian-test-1` showed "OS family: Debian", `fedora-test-1` showed "OS family: RedHat". Handler (`notify:` → `Show updated MOTD`) confirmed firing only when the MOTD task actually changed something, and correctly absent from output when nothing changed on a repeat run.
+
+## Role restructure — 2026-08-20
+
+The flat `baseline.yml` was replaced by a standard role (`roles/baseline/`) with a project-local `ansible.cfg`, a thin `site.yml` entry point, `group_vars/`, and tags allowing task subsets to be run independently. Inventory is now generated at runtime by `scripts/geninventory.sh` rather than maintained by hand.
+
+Verified in three consecutive runs against `debian-test-1` (Debian 12.15) and `fedora-test-1` (Fedora 44):
+
+| Run | Debian | Fedora | Meaning |
+|---|---|---|---|
+| `--check` | `changed=2`, no failures | `changed=2`, no failures | Dry run now evaluates correctly on a freshly provisioned host |
+| Real run | `changed=2` | `changed=2` | Matched the dry run's prediction exactly |
+| Repeat run | `changed=0` | `changed=0` | Idempotent; handler correctly did not fire |
+
+The match between the predicted and actual change counts is the meaningful result here: before `check_mode: false` was added to the cache-refresh tasks, `--check` produced a false failure on Debian and could not be trusted as a preview.

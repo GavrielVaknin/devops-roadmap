@@ -1,0 +1,9 @@
+---
+# Entry point. Playbooks at this level should stay thin —
+# they declare *which* roles apply to *which* hosts, nothing more.
+
+- name: Apply baseline configuration
+  hosts: test
+  become: true
+  roles:
+    - baseline

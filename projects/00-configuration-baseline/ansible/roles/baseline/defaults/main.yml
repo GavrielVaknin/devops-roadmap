@@ -1,0 +1,13 @@
+---
+# Lowest-priority variables. Anything here can be overridden by
+# group_vars, host_vars, or the command line.
+
+baseline_packages:
+  - htop
+  - vim
+
+baseline_motd_enabled: true
+baseline_motd_path: /etc/motd
+baseline_motd_owner: root
+baseline_motd_group: root
+baseline_motd_mode: '0644'

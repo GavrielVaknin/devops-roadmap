@@ -1,0 +1,31 @@
+---
+# Cache refresh runs even under --check.
+#
+# Reasoning: a dry run of the *install* task can only evaluate correctly if the
+# package index actually exists. On a freshly provisioned host the index is
+# empty, so without check_mode: false the install task fails during --check with
+# "No package matching X is available" — a false negative that says nothing
+# about whether the playbook is correct.
+#
+# Refreshing a package index is safe to perform during a dry run: it changes no
+# system state that matters, and it makes the subsequent check meaningful.
+
+- name: Update package cache (Debian family)
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  when: ansible_facts['os_family'] == "Debian"
+  check_mode: false
+  changed_when: false
+
+- name: Update package cache (RedHat family)
+  ansible.builtin.dnf:
+    update_cache: true
+  when: ansible_facts['os_family'] == "RedHat"
+  check_mode: false
+  changed_when: false
+
+- name: Ensure baseline packages are installed
+  ansible.builtin.package:
+    name: "{{ baseline_packages }}"
+    state: present

@@ -1,0 +1,11 @@
+---
+# Variables applied to every host in the 'test' group.
+# Override role defaults here rather than editing the role itself.
+
+baseline_packages:
+  - htop
+  - vim
+  - git
+  - curl
+
+baseline_motd_enabled: true

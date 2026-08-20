@@ -21,3 +21,27 @@ A Jinja2 template is a mostly-plain-text file with `{{ }}` placeholders that get
 A variable (`vars:`) is just a named container for a value, defined once and reused with `{{ name }}` anywhere else in the same play — avoids repeating the same list/value in multiple places.
 
 A handler is a task that only runs if explicitly notified by another task, and only if that task actually reported a change. Confirmed directly: when the MOTD task changed something, the handler section appeared in the output; on a repeat run where nothing changed, the handler section was entirely absent, not just skipped-looking.
+
+## Roles, and what the refactor taught (2026-08-20)
+
+The flat playbook was restructured into a standard Ansible role. Structure replaces configuration: Ansible auto-loads `main.yml` from each of `defaults/`, `vars/`, `tasks/`, `handlers/`, and `meta/`, and resolves `template: src=motd.j2` to `roles/<role>/templates/motd.j2` without any path being written anywhere. Learning the convention is what removes the need to configure paths at all.
+
+`defaults/` and `vars/` both hold variables but differ in precedence: `defaults/` is the lowest priority and exists to be overridden by whoever uses the role, `vars/` is high priority and holds role internals not meant to be changed from outside. Getting these the wrong way round is a common mistake.
+
+### Problems hit during the refactor, and what they were really about
+
+**Deprecated configuration.** `stdout_callback = yaml` was removed in `community.general` 12.0.0 and replaced by `callback_result_format = yaml` on the builtin callback. The error message named its own replacement — worth reading error output before searching. Ansible deprecates aggressively; config that was correct a couple of releases ago frequently isn't.
+
+**Retries misapplied.** `retries` / `until` were added to the package install task. They belong on genuinely transient failures — a flaky mirror, a dropped connection — not on a deterministic one. "Package not found in an empty index" fails identically every time, so retrying only delayed the real error and buried it under retry noise.
+
+**A previously-solved problem reintroduced.** The Debian install failed under `--check` because a freshly provisioned host has an empty package index, and check mode does not actually perform the cache refresh that would populate it. This exact failure had been diagnosed earlier against the flat playbook, and the understanding was not carried into the rewrite. The proper fix is `check_mode: false` on the cache-refresh tasks, so they run for real even during a dry run — safe, because refreshing an index changes no state that matters, and it makes the subsequent dry-run check meaningful rather than a false negative.
+
+The general lesson is about refactors rather than Ansible: a rewrite is usually cleaner than what it replaces, and quietly drops the accumulated fixes the messy version had earned. Worth checking what is being discarded, not just what is being improved.
+
+**Change reporting made honest.** `changed_when: false` was added to both cache-refresh tasks. An apt cache update reports `changed` on nearly every run, which — repeated often enough — trains you to ignore the `changed` column entirely. Reserving `changed` for genuine state changes keeps it a usable signal.
+
+### Known, unresolved noise
+
+Fedora hosts emit `[WARNING]: Module invocation had junk after the JSON data:` on most tasks. Ansible's module parser filters output appearing after the JSON payload and warns when it finds any, on the reasoning that trailing junk usually indicates something worth changing. There is an open upstream issue (ansible/ansible#86122) describing this exact behaviour on Fedora Cloud images when using privilege escalation, where the warning disappears if `become` is not used.
+
+This is cosmetic, originates upstream rather than in this role, and is recorded here so it is recognised as known noise rather than re-investigated later.

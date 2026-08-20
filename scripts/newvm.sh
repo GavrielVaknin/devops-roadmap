@@ -67,10 +67,12 @@ preflight() {
 
     [[ -f "$SSH_KEY" ]] || die "SSH public key not found at ${SSH_KEY}"
 
-    if ! virsh net-info default 2>/dev/null | grep -q "Active:.*yes"; then
+    local net_state
+    net_state="$(virsh net-info default 2>/dev/null | awk -F: '/^Active/ {gsub(/ /,"",$2); print $2}')"
+    if [[ "$net_state" != "yes" ]]; then
         info "libvirt 'default' network is not active — starting it"
-        virsh net-start default
-        virsh net-autostart default
+        virsh net-start default || die "Could not start the libvirt 'default' network."
+        virsh net-autostart default || true
     fi
 
     mkdir -p "$VM_DIR"

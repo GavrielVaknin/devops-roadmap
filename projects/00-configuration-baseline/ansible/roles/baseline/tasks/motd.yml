@@ -1,0 +1,10 @@
+---
+- name: Deploy baseline MOTD
+  ansible.builtin.template:
+    src: motd.j2
+    dest: "{{ baseline_motd_path }}"
+    owner: "{{ baseline_motd_owner }}"
+    group: "{{ baseline_motd_group }}"
+    mode: "{{ baseline_motd_mode }}"
+    backup: true
+  notify: Report MOTD change
