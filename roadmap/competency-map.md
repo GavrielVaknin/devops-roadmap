@@ -96,10 +96,10 @@ Packaging an application with its dependencies into a portable, isolated unit is
 **Depends on competencies:** Declarative, Version-Controlled System State
 **Enables competencies:** Orchestration at Scale
 
-**Status:** Not Started
+**Status:** Developing
 
-**Learning objectives:** → TBD
-**Evidence:** → TBD
+**Learning objectives:** → see learning-objectives.md, "Containerized Application Packaging"
+**Evidence:** → projects/01-containerized-web-app/evidence/
 
 ---
 
@@ -189,4 +189,4 @@ Nearly every tool in this map — Ansible, Terraform, CI/CD pipelines — is eit
 **Status:** Developing
 
 **Learning objectives:** → TBD
-**Evidence:** → TBD (studying via interactive platforms currently; real evidence should come from scripts actually written for this repo's projects, not platform exercises alone)
+**Evidence:** → `scripts/` — `newvm.sh`, `rmvm.sh`, and `geninventory.sh`, written for this repo after performing the underlying steps manually enough times to understand them. Interactive-platform study continues in parallel (ADR 0006) but is not counted as evidence here.

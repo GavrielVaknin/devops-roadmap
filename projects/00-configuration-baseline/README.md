@@ -1,7 +1,7 @@
 # 00 — Configuration Baseline
 
 ## Status
-See [`docs/status-log.md`](docs/status-log.md). Currently: Proposed.
+See [`docs/status-log.md`](docs/status-log.md) for current state and full history.
 
 ## Competency & Learning Objective
 Competency: **Configuration Consistency** (`roadmap/competency-map.md`), building on **Declarative, Version-Controlled System State**.
@@ -34,14 +34,51 @@ Every real DevOps environment manages fleets of machines this way — configurat
 - ADR 0004 — test-before-apply methodology
 - ADR 0005 — tool direction for later competencies (Podman, k3s), recorded now for continuity
 
+## Scope amendment (2026-08-20)
+
+The Goal above, as originally written, was to bring the Raspberry Pi 5 and the ThinkPad themselves under configuration management. **That did not happen, and is no longer the intent.**
+
+ADR 0008 moved lab work to the ThinkPad and deliberately left the Pi 5 idle without an assigned role. In practice the baseline has only ever been applied to disposable test VMs (Debian and Fedora), which is where it remains useful — the VMs stand in for the two real package families rather than for the two specific machines.
+
+The original goal is left in place above rather than rewritten, so the change of direction is visible rather than hidden. LO-002 in `roadmap/learning-objectives.md` has been superseded for the same reason.
+
 ## How to reproduce
-_(to fill in once implementation starts)_
+
+Requires the virtualisation stack (see `scripts/README.md` for one-time host setup).
+
+```bash
+# from the repository root
+./scripts/newvm.sh debian debian-test-1
+./scripts/newvm.sh fedora fedora-test-1 2048
+./scripts/geninventory.sh
+
+cd projects/00-configuration-baseline/ansible
+ansible-playbook site.yml --check    # dry run
+ansible-playbook site.yml            # apply
+ansible-playbook site.yml            # re-run: expect changed=0
+```
+
+No `-i` flag is needed — `ansible.cfg` points at the generated `inventory.yml`. Run subsets with `--tags packages` or `--tags motd`.
+
+Tear down with `./scripts/rmvm.sh debian-test-1 fedora-test-1`.
 
 ## Evidence
-_(to fill in — see `docs/standards/evidence-standards.md`; expect: inventory + playbook code, an idempotency test, a deployment log, a failure test + recovery procedure, an explanation in my own words)_
+
+- **Code** — `ansible/` (role, `site.yml`, `ansible.cfg`, `group_vars/`)
+- **Deployment record** — [`evidence/deployment-log.md`](evidence/deployment-log.md)
+- **Failure test** — [`evidence/failure-test.md`](evidence/failure-test.md)
+- **Recovery procedure** — [`evidence/recovery-procedure.md`](evidence/recovery-procedure.md)
+- **Explanation in my own words** — [`evidence/explanation.md`](evidence/explanation.md)
+- **Idempotency proof** — three consecutive runs recorded in the deployment log; third run reports `changed=0`
+- **ADRs** — 0004, 0005, 0007, 0009
+
+**Deliberately not produced:** an architecture diagram, and an automated test beyond the idempotency re-run. The diagram is a real gap. A separate automated test was judged redundant here, because the idempotent re-run *is* the verification — asserting the desired state and asserting nothing changed are the same operation for a declarative tool.
 
 ## What I learned
-_(to fill in)_
+
+Idempotency as a demonstrated property rather than a claim: a second identical run reporting `changed=0` is the proof, and it is checked per-task rather than assumed across a whole playbook. Cross-distribution logic through `ansible_facts['os_family']`, which groups by lineage rather than by distribution name. The real limits of dry-run mode, and `check_mode: false` as the correct fix when one task must actually run for a later task's check to mean anything. That the recovery procedure and the normal procedure are the same command, which is the practical payoff of a declarative baseline.
+
+Fuller detail in [`evidence/explanation.md`](evidence/explanation.md) and the dated journal entries.
 
 ## What this unlocks
 Containerized Application Packaging (Podman), and eventually Orchestration at Scale (k3s) — both need a consistently configured base to build on.

@@ -24,11 +24,16 @@ That chain is the spine of the repo. Start at [`roadmap/README.md`](roadmap/READ
 | [`docs/environment/`](docs/environment/) | Current-state facts about the hardware and network this all runs on |
 | [`docs/standards/`](docs/standards/) | The house rules this repo follows — documentation format, git conventions, project lifecycle, what counts as evidence |
 | [`projects/`](projects/) | The building blocks — each one self-contained, each one provable |
+| [`scripts/`](scripts/) | Repo-wide tooling — disposable VM lifecycle and runtime inventory generation |
 | [`archive/`](archive/) | Superseded work, kept rather than deleted |
 
 ## Status
 
-This repository is in its earliest state: the structure exists, the standards are written, the competency map is not yet filled in. See [`roadmap/README.md`](roadmap/README.md) for what comes next.
+Two projects are underway. **Project 00** brings disposable test machines under version-controlled, idempotent configuration management with Ansible, and has a full evidence set including a deliberate failure test and a verified recovery. **Project 01** packages a static web application into a container image with Podman and demonstrates horizontal scaling and container storage behaviour.
+
+Nine competencies are mapped in [`roadmap/`](roadmap/); two are in progress and the rest are not yet started. Definitions written in my own words are filled in as each competency is actually reached, rather than up front.
+
+See [`roadmap/README.md`](roadmap/README.md) for how competencies, objectives, projects, and evidence link together.
 
 ## License
 
